@@ -15,7 +15,7 @@ class Game:
 
         pygame.display.set_caption('ninja game')
         #game screen
-        self.screen = pygame.display.set_mode((800, 600))
+        self.screen = pygame.display.set_mode((640, 480))
         #render size 'zoom' / 'camera' - both displays will merge seperating outlined from normal
         self.display = pygame.Surface((320, 240), pygame.SRCALPHA)#objects withoutline
         self.display_2 = pygame.Surface((320, 240))#objects without outline
@@ -35,11 +35,11 @@ class Game:
                 'clouds': load_images('clouds'),
                 'enemy/idle': Animation(load_images('entities/enemy/idle'), img_dur=6),
                 'enemy/run': Animation(load_images('entities/enemy/run'), img_dur=4),
-                'player/idle': Animation(load_images('entities/samuri/idle'), img_dur=6),
-                'player/run': Animation(load_images('entities/samuri/run'), img_dur=4),
-                'player/jump': Animation(load_images('entities/samuri/jump'), img_dur=4),
-                'player/slide': Animation(load_images('entities/player/slide'), img_dur=4),
-                'player/wall_slide': Animation(load_images('entities/samuri/wall_slide'), img_dur=4),
+                'player/idle': Animation(load_images('entities/samurai2/idle'), img_dur=6),
+                'player/run': Animation(load_images('entities/samurai2/run'), img_dur=4),
+                'player/jump': Animation(load_images('entities/samurai2/idle'), img_dur=4),
+                'player/slide': Animation(load_images('entities/samurai2/idle'), img_dur=4),
+                'player/wall_slide': Animation(load_images('entities/samurai2/idle'), img_dur=4),
                 'particle/leaf': Animation(load_images('particles/leaf'), img_dur=20, loop=False),
                 'particle/particle': Animation(load_images('particles/particle'), img_dur=6, loop=False),
                 'gun': load_image('gun.png'),
@@ -62,8 +62,9 @@ class Game:
         self.sfx['jump'].set_volume(0.7)
 
         self.clouds = Clouds(self.assets['clouds'], count=16)
-        #from scripts/entities.py
-        self.player = Player(self, (50, 50), (8, 15))
+        #player select pos/size
+        #self.player = Player(self, (50, 50), (8, 15))#original
+        self.player = Player(self, (50, 50), (10, 16))#samurai2
 
         #pass in assets to TileMap using self as the game
         self.tilemap = TileMap(self, tile_size=16)

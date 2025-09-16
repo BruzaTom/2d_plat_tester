@@ -82,6 +82,9 @@ class PhysicsEntity:
         pos_offset_p_ani_x = self.pos[0] - offset[0] + self.ani_offset[0] 
         pos_offset_p_ani_y = self.pos[1] - offset[1] + self.ani_offset[1] 
         ani_pos_os = (pos_offset_p_ani_x, pos_offset_p_ani_y) 
+        #true pos debug
+        pygame.draw.rect(surface, (255, 0, 0), pygame.Rect(self.pos[0] - offset[0], self.pos[1] - offset[1], self.size[0], self.size[1]), width=1)
+
         surface.blit(flip_flagged_img, ani_pos_os)
        
        #before animations
@@ -196,9 +199,11 @@ class Player(PhysicsEntity):
 
         #manage ani_offsets according to charcter
         if self.flip:
-            self.ani_offset = (-5, -1)#samuri
+            #self.ani_offset = (-5, -1)#samuri
+            self.ani_offset = (-51, -35)#samurai2
         else:
-            self.ani_offset = (-3, -1)#samuri
+            #self.ani_offset = (-3, -1)#samuri
+            self.ani_offset = (-36, -35)#samurai2
 
 
             

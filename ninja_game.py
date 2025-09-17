@@ -30,16 +30,18 @@ class Game:
                 'grass' : load_images('tiles/grass'),
                 'large_decor' : load_images('tiles/large_decor'),
                 'stone' : load_images('tiles/stone'),
+                'empty' : load_images('tiles/empty'),
                 'player' : load_image('entities/player.png'),
-                'background' : load_image('background.png'),
+                'background' : load_image('background2.png'),
                 'clouds': load_images('clouds'),
                 'enemy/idle': Animation(load_images('entities/enemy/idle'), img_dur=6),
                 'enemy/run': Animation(load_images('entities/enemy/run'), img_dur=4),
                 'player/idle': Animation(load_images('entities/samurai2/idle'), img_dur=6),
                 'player/run': Animation(load_images('entities/samurai2/run'), img_dur=4),
-                'player/jump': Animation(load_images('entities/samurai2/idle'), img_dur=4),
+                'player/jump': Animation(load_images('entities/samurai2/jump'), img_dur=4),
+                'player/fall': Animation(load_images('entities/samurai2/fall'), img_dur=8),
                 'player/slide': Animation(load_images('entities/samurai2/idle'), img_dur=4),
-                'player/wall_slide': Animation(load_images('entities/samurai2/idle'), img_dur=4),
+                'player/wall_slide': Animation(load_images('entities/samurai2/wall_slide'), img_dur=6),
                 'particle/leaf': Animation(load_images('particles/leaf'), img_dur=20, loop=False),
                 'particle/particle': Animation(load_images('particles/particle'), img_dur=6, loop=False),
                 'gun': load_image('gun.png'),
@@ -64,10 +66,11 @@ class Game:
         self.clouds = Clouds(self.assets['clouds'], count=16)
         #player select pos/size
         #self.player = Player(self, (50, 50), (8, 15))#original
-        self.player = Player(self, (50, 50), (10, 16))#samurai2
+        self.player = Player(self, (50, 50), (10, 24))#samurai2
 
         #pass in assets to TileMap using self as the game
-        self.tilemap = TileMap(self, tile_size=16)
+        self.tilemap = TileMap(self, 30)
+        print(self.tilemap.tile_size)
 
         #start levels
         self.level = 0
@@ -241,9 +244,9 @@ class Game:
         #bg music
         pygame.mixer.music.load('data/music.wav')
         pygame.mixer.music.set_volume(0.5)
-        pygame.mixer.music.play(-1)#0, 1, -1
+        #pygame.mixer.music.play(-1)#0, 1, -1
         #bg sfx
-        self.sfx['ambience'].play(-1)
+        #self.sfx['ambience'].play(-1)
 
 
             #-------------------gameloop------------------------

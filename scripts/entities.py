@@ -200,10 +200,10 @@ class Player(PhysicsEntity):
         #manage ani_offsets according to charcter
         if self.flip:
             #self.ani_offset = (-5, -1)#samuri
-            self.ani_offset = (-51, -35)#samurai2
+            self.ani_offset = (-51, -26)#samurai2
         else:
             #self.ani_offset = (-3, -1)#samuri
-            self.ani_offset = (-36, -35)#samurai2
+            self.ani_offset = (-36, -26)#samurai2
 
 
             
@@ -241,7 +241,9 @@ class Player(PhysicsEntity):
             self.wall_slide = False
 
         if not self.wall_slide:
-            if self.air_time > 4:
+            if self.velocity[1] > 1:
+                self.set_action('fall')
+            elif self.air_time > 4:
                 self.set_action('jump')
             elif movement[0] != 0:
                 self.set_action('run')

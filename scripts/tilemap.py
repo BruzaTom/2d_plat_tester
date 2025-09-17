@@ -23,11 +23,11 @@ AUTOTILE_MAP = {
         }
 #variable for tile locations around player
 NEIGHBORS_OFFSETS = [(-1, 0), (-1,-1), (0,-1), (1,-1), (1, 0), (0, 0), (-1, 1), (0, 1), (1, 1)]
-PHYSICS_TILES = {'grass', 'stone'}
+PHYSICS_TILES = {'grass', 'stone', 'empty'}
 AUTOTILE_TYPES = {'grass', 'stone'} 
 
 class TileMap:
-    def __init__(self, game,tile_size=16):
+    def __init__(self, game, tile_size):
         self.game = game
         self.tile_size = tile_size
         self.tilemap = {}
@@ -147,6 +147,8 @@ class TileMap:
                     tile_pos_y_os = tile_pos[1] * self.tile_size - offset[1] 
                     tile_pos_offset = (tile_pos_x_os, tile_pos_y_os) 
                     img = self.game.assets[tile_type][tile_variant] 
+                    #true pos debug
+                    pygame.draw.rect(surface, (0, 255, 0), pygame.Rect(tile_pos_offset[0], tile_pos_offset[1], self.tile_size, self.tile_size), width=1)
                     surface.blit(img, tile_pos_offset)
             
 

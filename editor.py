@@ -1,7 +1,7 @@
 import sys
 import pygame
-from utils import load_images
-from tilemap import TileMap
+from scripts.utils import load_images
+from scripts.tilemap import TileMap
 
 RENDER_SCALE = 2.0
 
@@ -31,7 +31,7 @@ class Editor:
         #movement left, right, up, down
         self.movement = [False, False, False, False]
         #tilemap
-        self.tilemap = TileMap(self, 32)
+        self.tilemap = TileMap(self, 30)
         try:
             self.tilemap.load('map.json')
         except FileNotFoundError:

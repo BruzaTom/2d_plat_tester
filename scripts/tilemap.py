@@ -1,5 +1,6 @@
 import json
 import pygame
+from scripts.utils import blit_box
 
 AUTOTILE_MAP = {
         #if tile right and below use tile 0
@@ -93,6 +94,7 @@ class TileMap:
         self.tilemap = map_data['tilemap']
         self.tile_size = map_data['tile_size']
         self.offgrid_tiles = map_data['offgrid']
+        #debug tile map
 
     
     #save to json
@@ -147,8 +149,10 @@ class TileMap:
                     tile_pos_y_os = tile_pos[1] * self.tile_size - offset[1] 
                     tile_pos_offset = (tile_pos_x_os, tile_pos_y_os) 
                     img = self.game.assets[tile_type][tile_variant] 
-                    #true pos debug
-                    pygame.draw.rect(surface, (0, 255, 0), pygame.Rect(tile_pos_offset[0], tile_pos_offset[1], self.tile_size, self.tile_size), width=1)
+        #-----------------true pos debug---------------------
+                    #:w
+                    blit_box(surface, tile_pos_offset, (self.tile_size, self.tile_size), 'green')
+        #----------------------------------------------------
                     surface.blit(img, tile_pos_offset)
             
 

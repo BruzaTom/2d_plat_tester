@@ -8,6 +8,7 @@ from scripts.tilemap import TileMap
 from scripts.clouds import Clouds
 from scripts.particle import Particle
 from scripts.spark import Spark
+from scripts.fonts import Font
 
 class Game:
     def __init__(self):
@@ -36,12 +37,7 @@ class Game:
                 'clouds': load_images('clouds'),
                 'enemy/idle': Animation(load_images('entities/enemy/idle'), img_dur=6),
                 'enemy/run': Animation(load_images('entities/enemy/run'), img_dur=4),
-                'player/idle': Animation(load_images('entities/samurai2/idle'), img_dur=6),
-                'player/run': Animation(load_images('entities/samurai2/run'), img_dur=4),
-                'player/jump': Animation(load_images('entities/samurai2/jump'), img_dur=4),
-                'player/fall': Animation(load_images('entities/samurai2/fall'), img_dur=8),
-                'player/slide': Animation(load_images('entities/samurai2/idle'), img_dur=4),
-                'player/wall_slide': Animation(load_images('entities/samurai2/wall_slide'), img_dur=6),
+                
                 'particle/leaf': Animation(load_images('particles/leaf'), img_dur=20, loop=False),
                 'particle/particle': Animation(load_images('particles/particle'), img_dur=6, loop=False),
                 'gun': load_image('gun.png'),
@@ -64,10 +60,6 @@ class Game:
         self.sfx['jump'].set_volume(0.7)
 
         self.clouds = Clouds(self.assets['clouds'], count=16)
-        #player select pos/size
-        #self.player = Player(self, (50, 50), (8, 15))#original
-        self.player = Player(self, (50, 50), (10, 24))#samurai2
-
         #pass in assets to TileMap using self as the game
         self.tilemap = TileMap(self, 30)
         print(self.tilemap.tile_size)
@@ -78,6 +70,33 @@ class Game:
 
         #screen-shake effect
         self.screenshake = 0
+
+    #load player
+    #loads
+    def load_player(self, player_str):
+        ani_offset = [(-3, -3), (-3, -3)]
+        assets = {
+                    'player/idle': Animation(load_images(f'entities/{player_str}/idle'), img_dur=6),
+                    'player/run': Animation(load_images(f'entities/{player_str}/run'), img_dur=4),
+                    'player/jump': Animation(load_images(f'entities/{player_str}/jump'), img_dur=4),
+                    'player/slide': Animation(load_images(f'entities/{player_str}/idle'), img_dur=4),
+                    'player/wall_slide': Animation(load_images(f'entities/{player_str}/wall_slide'), img_dur=6),
+                    }
+        if player_str == 'samurai2':
+            assets['player/fall'] = Animation(load_images(f'entities/{player_str}/fall'), img_dur=8)
+        ani_offsets = {
+                #norm - flip
+                'samurai2': [(-36, -26), (-51, -26)],
+                'samuri': [(-3, 0), (-5, 0)],
+                'player': [(-3, -3), (-3, -3)],
+                }
+        players = {
+                'samurai2': (10, 25),
+                'samuri': (8, 16),
+                'player': (8, 16),
+                }
+        self.assets.update(assets)
+        return Player(self, (50, 50), players.get(player_str, (30, 30)), ani_offsets.get(player_str, ani_offset))
 
     #level loader
     def load_level(self):
@@ -93,6 +112,12 @@ class Game:
         self.enemies = []
         for spawner in self.tilemap.extract([('spawners', 0), ('spawners', 1)]):
             if spawner['variant'] == 0:
+                
+                #player select
+                #self.player = self.load_player('samuri') 
+                self.player = self.load_player('samurai2') 
+                #self.player = self.load_player('player') 
+
                 self.player.pos = spawner['pos']
                 self.player.air_time = 0#prevents falling to death from multiple triggers
             else:
@@ -109,6 +134,8 @@ class Game:
         self.dead = 0
         #transition
         self.transition = -30
+        #fonts
+        self.small_font = Font('data/fonts/small_font/black.png')
 
     #game logic
     def logic(self):
@@ -291,6 +318,15 @@ class Game:
                 
             #manage transition
             manage_transition()
+
+            self.small_font.render(self.display, 'Tile Map:', (20, 20))
+            self.small_font.render(self.display, f'size = {str(self.tilemap.tile_size)}', (20, 30))
+            self.small_font.render(self.display, 'Player:', (200, 20))
+            pos = f'({self.player.pos[0]:.3f}, {self.player.pos[1]:.3f})'
+            self.small_font.render(self.display, f'pos = ' + pos, (200, 30))
+            velocity = f'({int(self.player.velocity[0])}, {int(self.player.velocity[1])})'
+            self.small_font.render(self.display, f'velocity = ' + velocity, (200, 40))
+            self.small_font.render(self.display, f'ani_offset = {str(self.player.ani_offset)}', (200, 50))
 
             #display
             self.display_2.blit(self.display, (0, 0))#draw game back on top / "merge displays"

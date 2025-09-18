@@ -1,6 +1,7 @@
 import pygame, math, random
 from scripts.particle import Particle
 from scripts.spark import Spark
+from scripts.utils import blit_box
 
 class PhysicsEntity:
     def __init__(self, game, e_type, pos, size):
@@ -82,9 +83,9 @@ class PhysicsEntity:
         pos_offset_p_ani_x = self.pos[0] - offset[0] + self.ani_offset[0] 
         pos_offset_p_ani_y = self.pos[1] - offset[1] + self.ani_offset[1] 
         ani_pos_os = (pos_offset_p_ani_x, pos_offset_p_ani_y) 
-        #true pos debug
-        pygame.draw.rect(surface, (255, 0, 0), pygame.Rect(self.pos[0] - offset[0], self.pos[1] - offset[1], self.size[0], self.size[1]), width=1)
-
+        #-----------------true pos debug---------------------
+        blit_box(surface, (self.pos[0] - offset[0], self.pos[1] - offset[1]), self.size, 'red')
+        #----------------------------------------------------
         surface.blit(flip_flagged_img, ani_pos_os)
        
        #before animations
@@ -186,25 +187,25 @@ class Enemy(PhysicsEntity):
 
 
 class Player(PhysicsEntity):
-    def __init__(self, game, pos, size):
+    def __init__(self, game, pos, size, ani_offset):
         super().__init__(game, 'player', pos, size)
         self.air_time = 0
         self.jumps = 1
         self.wall_slide = False
         self.dashing = 0
         self.lost_timer = 0
+        self.norm_ani_offset = ani_offset[0]
+        self.flip_ani_offset = ani_offset[1]
 
     def update(self, tilemap, movement=(0, 0)):
         super().update(tilemap, movement=movement)
 
+
         #manage ani_offsets according to charcter
         if self.flip:
-            #self.ani_offset = (-5, -1)#samuri
-            self.ani_offset = (-51, -26)#samurai2
+            self.ani_offset = self.flip_ani_offset
         else:
-            #self.ani_offset = (-3, -1)#samuri
-            self.ani_offset = (-36, -26)#samurai2
-
+            self.ani_offset = self.norm_ani_offset
 
             
         self.air_time += 1
@@ -242,7 +243,10 @@ class Player(PhysicsEntity):
 
         if not self.wall_slide:
             if self.velocity[1] > 1:
-                self.set_action('fall')
+                if 'player/fall' in self.game.assets:
+                    self.set_action('fall')
+                else:
+                    pass
             elif self.air_time > 4:
                 self.set_action('jump')
             elif movement[0] != 0:

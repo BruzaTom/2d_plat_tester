@@ -26,6 +26,7 @@ class Editor:
                 'stone' : load_images('tiles/stone'),
                 'spawners' : load_images('tiles/spawners'),
                 'empty' : load_images('tiles/empty'),
+                'blue' : load_images('tiles/blue'),
                 }
         
         #movement left, right, up, down

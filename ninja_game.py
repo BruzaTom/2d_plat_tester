@@ -2,6 +2,7 @@ import sys, os
 import random#partickles
 import math#particles
 import pygame
+import re 
 from scripts.entities import PhysicsEntity, Player, Enemy
 from scripts.utils import load_image, load_images, Animation
 from scripts.tilemap import TileMap
@@ -32,6 +33,7 @@ class Game:
                 'large_decor' : load_images('tiles/large_decor'),
                 'stone' : load_images('tiles/stone'),
                 'empty' : load_images('tiles/empty'),
+                'blue' : load_images('tiles/blue'),
                 'player' : load_image('entities/player.png'),
                 'background' : load_image('background2.png'),
                 'clouds': load_images('clouds'),
@@ -80,10 +82,11 @@ class Game:
                     'player/run': Animation(load_images(f'entities/{player_str}/run'), img_dur=4),
                     'player/jump': Animation(load_images(f'entities/{player_str}/jump'), img_dur=4),
                     'player/slide': Animation(load_images(f'entities/{player_str}/idle'), img_dur=4),
-                    'player/wall_slide': Animation(load_images(f'entities/{player_str}/wall_slide'), img_dur=6),
+                    'player/wall_slide': Animation(load_images(f'entities/{player_str}/wall_slide'), img_dur=8),
                     }
         if player_str == 'samurai2':
             assets['player/fall'] = Animation(load_images(f'entities/{player_str}/fall'), img_dur=8)
+            assets['player/dash'] = Animation(load_images(f'entities/{player_str}/dash'), img_dur=2, loop = False)
         ani_offsets = {
                 #norm - flip
                 'samurai2': [(-36, -26), (-51, -26)],
@@ -195,7 +198,7 @@ class Game:
         def manage_enemies():
             for enemy in self.enemies.copy():
                 kill = enemy.update(self.tilemap, (0, 0))
-                enemy.render(self.display, offset=render_scroll)
+                enemy.render(self.display_2, offset=render_scroll)
                 if kill:
                     self.enemies.remove(enemy)
 
@@ -207,7 +210,7 @@ class Game:
                 img = self.assets['projectile']
                 pos_x = projectile[0][0] - img.get_width() / 2 - render_scroll[0]
                 pos_y = projectile[0][1] - img.get_height() / 2 - render_scroll[1]
-                self.display.blit(img, (pos_x, pos_y))
+                self.display_2.blit(img, (pos_x, pos_y))
                 if self.tilemap.solid_check(projectile[0]):#projectile hit wall
                     self.projectiles.remove(projectile)
                     #add parks
@@ -264,8 +267,8 @@ class Game:
 
         def manage_mask():#wont effect renders called after
             display_mask = pygame.mask.from_surface(self.display)#mask for respective renders
-            display_sillouette = display_mask.to_surface(setcolor=(0, 0, 0, 180), unsetcolor=(0, 0, 0, 0))#make less transparent
-            for offset in [(-1, 0), (1, 0), (0, -1), (0, 1)]:#cast sillouette on all sides
+            display_sillouette = display_mask.to_surface(setcolor=(0, 0, 0, 255), unsetcolor=(0, 0, 0, 0))#make less transparent
+            for offset in [(4, 0), (0, 4)]:#cast sillouette on all sides
                 self.display_2.blit(display_sillouette, offset)
         
         #bg music
@@ -291,7 +294,7 @@ class Game:
             #clouds behind tilemap
             self.clouds.update()
             self.clouds.render(self.display_2, offset=render_scroll)
-            self.tilemap.render(self.display, offset=render_scroll)
+            self.tilemap.render(self.display_2, offset=render_scroll)
 
             #enemy calls
             manage_enemies()
@@ -299,7 +302,7 @@ class Game:
             #player calls
             if not self.dead:
                 self.player.update(self.tilemap, (self.movement[1] - self.movement[0], 0))
-                self.player.render(self.display, offset=render_scroll)
+                self.player.render(self.display_2, offset=render_scroll)
 
             #enemy projectile calls
             manage_enemy_projectiles()
@@ -308,7 +311,7 @@ class Game:
             manage_projectile_sparks()
 
             #manage sillouette before particles
-            #manage_mask()
+            manage_mask()
             
             #leaf particles calls
             manage_particles()
@@ -326,7 +329,10 @@ class Game:
             self.small_font.render(self.display, f'pos = ' + pos, (200, 30))
             velocity = f'({int(self.player.velocity[0])}, {int(self.player.velocity[1])})'
             self.small_font.render(self.display, f'velocity = ' + velocity, (200, 40))
-            self.small_font.render(self.display, f'ani_offset = {str(self.player.ani_offset)}', (200, 50))
+            text = str(self.player.animation.images[self.player.animation.frame % len(self.player.animation.images)])
+            image_path = re.search(r'<(.*?)>', text)
+            self.small_font.render(self.display, f'animation = ' + str(self.player.action), (200, 50))
+            self.small_font.render(self.display, f'ani_offset = {str(self.player.ani_offset)}', (200, 60))
 
             #display
             self.display_2.blit(self.display, (0, 0))#draw game back on top / "merge displays"

@@ -242,7 +242,10 @@ class Player(PhysicsEntity):
             self.wall_slide = False
 
         if not self.wall_slide:
-            if self.velocity[1] > 1:
+            if self.dashing > 50 or self.dashing < -50:
+                if 'player/dash' in self.game.assets:
+                    self.set_action('dash') 
+            elif self.velocity[1] > 1:
                 if 'player/fall' in self.game.assets:
                     self.set_action('fall')
                 else:
@@ -276,6 +279,7 @@ class Player(PhysicsEntity):
             #trailing particles
             p_velocity = [abs(self.dashing) / self.dashing * random.random() * 3, 0]
             new_particle = Particle(self.game, 'particle', self.rect().center, velocity=p_velocity, frame=random.randint(0, 7))
+
             self.game.particles.append(new_particle)
 
         #normalize towards zero from wall jump
@@ -286,8 +290,8 @@ class Player(PhysicsEntity):
 
     def render(self, surface, offset=(0, 0)):
         #if player is not dashing just call inherited render 
-        if abs(self.dashing) <= 50:
-            super().render(surface, offset=offset)
+        super().render(surface, offset=offset)
+
 
 
     def jump(self):

@@ -24,7 +24,7 @@ AUTOTILE_MAP = {
         }
 #variable for tile locations around player
 NEIGHBORS_OFFSETS = [(-1, 0), (-1,-1), (0,-1), (1,-1), (1, 0), (0, 0), (-1, 1), (0, 1), (1, 1)]
-PHYSICS_TILES = {'grass', 'stone', 'empty'}
+PHYSICS_TILES = {'grass', 'stone', 'empty', 'blue'}
 AUTOTILE_TYPES = {'grass', 'stone'} 
 
 class TileMap:
@@ -150,8 +150,7 @@ class TileMap:
                     tile_pos_offset = (tile_pos_x_os, tile_pos_y_os) 
                     img = self.game.assets[tile_type][tile_variant] 
         #-----------------true pos debug---------------------
-                    #:w
-                    blit_box(surface, tile_pos_offset, (self.tile_size, self.tile_size), 'green')
+                    #blit_box(surface, tile_pos_offset, (self.tile_size, self.tile_size), 'green')
         #----------------------------------------------------
                     surface.blit(img, tile_pos_offset)
             

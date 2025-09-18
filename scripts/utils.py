@@ -18,7 +18,7 @@ class Animation:
     def update(self):
         dur_x_len = self.img_dur * len(self.images) 
         if self.loop:
-            self.frame = self.frame + 1 % (dur_x_len)
+            self.frame = self.frame + 1 % dur_x_len
         else:
             self.frame = min(self.frame + 1, dur_x_len - 1)
             if self.frame >= dur_x_len - 1:

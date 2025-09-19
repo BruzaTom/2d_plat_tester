@@ -4,7 +4,7 @@ import math#particles
 import pygame
 import re 
 from scripts.entities import PhysicsEntity, Player, Enemy
-from scripts.utils import load_image, load_images, Animation
+from scripts.utils import load_image, load_images, Animation, blit_box
 from scripts.tilemap import TileMap
 from scripts.clouds import Clouds
 from scripts.particle import Particle
@@ -39,11 +39,10 @@ class Game:
                 'clouds': load_images('clouds'),
                 'enemy/idle': Animation(load_images('entities/enemy/idle'), img_dur=6),
                 'enemy/run': Animation(load_images('entities/enemy/run'), img_dur=4),
-                
+                'enemy/projectile': Animation(load_images('entities/enemy/projectile'), img_dur=20),
                 'particle/leaf': Animation(load_images('particles/leaf'), img_dur=20, loop=False),
                 'particle/particle': Animation(load_images('particles/particle'), img_dur=6, loop=False),
                 'gun': load_image('gun.png'),
-                'projectile': load_image('projectile.png'),
                 }
 
         #sound effects
@@ -205,25 +204,23 @@ class Game:
         #enemy projectile logic
         def manage_enemy_projectiles():
             for projectile in self.projectiles.copy():
-                projectile[0][0] += projectile[1]#[[x, y], direction, timer]
-                projectile[2] += 1
-                img = self.assets['projectile']
-                pos_x = projectile[0][0] - img.get_width() / 2 - render_scroll[0]
-                pos_y = projectile[0][1] - img.get_height() / 2 - render_scroll[1]
-                self.display_2.blit(img, (pos_x, pos_y))
-                if self.tilemap.solid_check(projectile[0]):#projectile hit wall
+                projectile.update()
+                projectile.render(self.display, offset=render_scroll)
+                #debug projectiles
+                #blit_box(self.display_2, (pos_x, pos_y), img.get_size(), 'green')
+                if self.tilemap.solid_check(projectile.pos):#projectile hit wall
                     self.projectiles.remove(projectile)
                     #add parks
                     for i in range(4):
-                        spark_pos = projectile[0]
-                        spark_angle = random.random() - 0.5 + (math.pi if projectile[1] > 0 else 0)#bounce off walls
+                        spark_pos = projectile.pos
+                        spark_angle = random.random() - 0.5 + (math.pi if projectile.direction > 0 else 0)#bounce off walls
                         spark_speed = 2 + random.random()
                         new_spark = Spark(spark_pos, spark_angle, spark_speed)
                         self.sparks.append(new_spark)
-                elif projectile[2] > 360:
+                elif projectile.timer > 720:
                     self.projectiles.remove(projectile)
                 elif abs(self.player.dashing) < 50:
-                    if self.player.rect().collidepoint(projectile[0]):#projectile hit player
+                    if self.player.rect().collidepoint(projectile.pos):#projectile hit player
                         self.projectiles.remove(projectile)
                         self.dead += 1#start death timer
                         self.sfx['hit'].play(0)
@@ -268,8 +265,7 @@ class Game:
         def manage_mask():#wont effect renders called after
             display_mask = pygame.mask.from_surface(self.display)#mask for respective renders
             display_sillouette = display_mask.to_surface(setcolor=(0, 0, 0, 255), unsetcolor=(0, 0, 0, 0))#make less transparent
-            for offset in [(4, 0), (0, 4)]:#cast sillouette on all sides
-                self.display_2.blit(display_sillouette, offset)
+            self.display_2.blit(display_sillouette, (4, 4))
         
         #bg music
         pygame.mixer.music.load('data/music.wav')
@@ -294,7 +290,7 @@ class Game:
             #clouds behind tilemap
             self.clouds.update()
             self.clouds.render(self.display_2, offset=render_scroll)
-            self.tilemap.render(self.display_2, offset=render_scroll)
+            self.tilemap.render(self.display, offset=render_scroll)
 
             #enemy calls
             manage_enemies()

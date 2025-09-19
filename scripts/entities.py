@@ -2,6 +2,7 @@ import pygame, math, random
 from scripts.particle import Particle
 from scripts.spark import Spark
 from scripts.utils import blit_box
+from scripts.projectile import Projectile
 
 class PhysicsEntity:
     def __init__(self, game, e_type, pos, size):
@@ -113,22 +114,26 @@ class Enemy(PhysicsEntity):
                 if (abs(dis_y) < 16):
                     if (self.flip and dis_x < 0):#looking left and player is to the left
                         self.game.sfx['shoot'].play(0)
-                        projectile_pos = [self.rect().centerx - 7, self.rect().centery]
-                        self.game.projectiles.append([projectile_pos, -1.5, 0])
+                        proj_pos = [self.rect().centerx - 7, self.rect().centery]
+                        proj_ani = self.game.assets['enemy/projectile'] 
+                        new_proj = Projectile(self.game, proj_pos, (6, 4), -1.5, proj_ani, self.flip) 
+                        self.game.projectiles.append(new_proj)
                         #add parks
                         for i in range(4):
-                            spark_pos = self.game.projectiles[-1][0]
+                            spark_pos = self.game.projectiles[-1].pos
                             spark_angle = random.random() - 0.5 + math.pi#left
                             spark_speed = 2 + random.random()
                             new_spark = Spark(spark_pos, spark_angle, spark_speed)
                             self.game.sparks.append(new_spark)
                     if (not self.flip and dis_x > 0):#looking right and player is to the right
                         self.game.sfx['shoot'].play(0)
-                        projectile_pos = [self.rect().centerx + 7, self.rect().centery]
-                        self.game.projectiles.append([projectile_pos, 1.5, 0])
+                        proj_pos = [self.rect().centerx + 7, self.rect().centery]
+                        proj_ani = self.game.assets['enemy/projectile'] 
+                        new_proj = Projectile(self.game, proj_pos, (6, 4), 1.5, proj_ani, self.flip) 
+                        self.game.projectiles.append(new_proj)
                         #add parks
                         for i in range(4):
-                            spark_pos = self.game.projectiles[-1][0]
+                            spark_pos = self.game.projectiles[-1].pos
                             spark_angle = random.random() - 0.5#right
                             spark_speed = 2 + random.random()
                             new_spark = Spark(spark_pos, spark_angle, spark_speed)

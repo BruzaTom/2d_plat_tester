@@ -53,3 +53,4 @@ def blit_box(screen, pos, size, color_str):
     pygame.draw.rect(screen, color, rect, width=1)
 
 
+

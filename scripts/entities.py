@@ -74,7 +74,7 @@ class PhysicsEntity:
         #gravity
         self.velocity[1] = min(5, self.velocity[1] + 0.1)
 
-        if self.collisions['down']:
+        if self.collisions['down'] or self.collisions['up']:
             self.velocity[1] = 0
 
         self.animation.update()
@@ -85,7 +85,8 @@ class PhysicsEntity:
         pos_offset_p_ani_y = self.pos[1] - offset[1] + self.ani_offset[1] 
         ani_pos_os = (pos_offset_p_ani_x, pos_offset_p_ani_y) 
         #-----------------true pos debug---------------------
-        blit_box(surface, (self.pos[0] - offset[0], self.pos[1] - offset[1]), self.size, 'red')
+        #blit_box(surface, (self.pos[0] - offset[0], self.pos[1] - offset[1]), self.animation.img().get_size(), 'red')
+        #blit_box(surface, (self.pos[0] - offset[0], self.pos[1] - offset[1]), self.size, 'red')
         #----------------------------------------------------
         surface.blit(flip_flagged_img, ani_pos_os)
        

@@ -308,7 +308,7 @@ class Game:
             manage_projectile_sparks()
 
             #manage sillouette before particles
-            #manage_mask()
+            manage_mask()
             
             #leaf particles calls
             manage_particles()

@@ -33,5 +33,5 @@ class Projectile:
         self.point = (pos_x, pos_y)#for collisions
         offset_pos = (self.point[0] + self.ani_offset[0], self.point[1])
         surface.blit(self.image, offset_pos)
-        blit_box(surface, self.point, img.get_size(), 'red')#use point and image.get_size
+        #blit_box(surface, self.point, img.get_size(), 'red')#use point and image.get_size
 

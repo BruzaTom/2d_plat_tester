@@ -17,10 +17,11 @@ class Game:
 
         pygame.display.set_caption('ninja game')
         #game screen
-        self.screen = pygame.display.set_mode((640, 480))
+        self.screen = pygame.display.set_mode((1200, 900))
         #render size 'zoom' / 'camera' - both displays will merge seperating outlined from normal
-        self.display = pygame.Surface((320, 240), pygame.SRCALPHA)#objects withoutline
-        self.display_2 = pygame.Surface((320, 240))#objects without outline
+        render_size = (self.screen.get_width() // 4, self.screen.get_height() // 4)
+        self.display = pygame.Surface((640, 480), pygame.SRCALPHA)#objects withoutline
+        self.display_2 = pygame.Surface((640, 480))#objects without outline
         #
         self.clock = pygame.time.Clock()
         #movement x y
@@ -186,7 +187,7 @@ class Game:
         def manage_particles():
             for particle in self.particles.copy():
                 kill = particle.update()
-                particle.render(self.display, offset=render_scroll)
+                particle.render(self.display_2, offset=render_scroll)
                 if particle.p_type == 'leaf':
                     #apply sin effect to position               0.035 slows down effect
                     particle.pos[0] += math.sin(particle.animation.frame * 0.035) * 0.3
@@ -307,7 +308,7 @@ class Game:
             manage_projectile_sparks()
 
             #manage sillouette before particles
-            manage_mask()
+            #manage_mask()
             
             #leaf particles calls
             manage_particles()

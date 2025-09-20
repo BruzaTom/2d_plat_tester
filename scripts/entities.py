@@ -74,7 +74,7 @@ class PhysicsEntity:
         #gravity
         self.velocity[1] = min(5, self.velocity[1] + 0.1)
 
-        if self.collisions['down'] or self.collisions['up']:
+        if self.collisions['down']:
             self.velocity[1] = 0
 
         self.animation.update()

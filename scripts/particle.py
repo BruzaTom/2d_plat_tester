@@ -25,5 +25,5 @@ class Particle:
         img_x_os = self.pos[0] - offset[0] - img.get_width() // 2
         img_y_os = self.pos[1] - offset[1] - img.get_height() // 2
         img_os_pos = (img_x_os, img_y_os)
-        #surface.blit(img, img_os_pos) 
+        surface.blit(img, img_os_pos) 
 

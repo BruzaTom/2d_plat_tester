@@ -321,6 +321,8 @@ class Game:
 
             self.small_font.render(self.display, 'Tile Map:', (20, 20))
             self.small_font.render(self.display, f'size = {str(self.tilemap.tile_size)}', (20, 30))
+            tile_one_values, check_locs = self.tilemap.tiles_around(self.player.pos)
+            self.small_font.render(self.display, f'tiles_around = {str(len(check_locs))}', (20, 40))
             self.small_font.render(self.display, 'Player:', (200, 20))
             pos = f'({self.player.pos[0]:.3f}, {self.player.pos[1]:.3f})'
             self.small_font.render(self.display, f'pos = ' + pos, (200, 30))

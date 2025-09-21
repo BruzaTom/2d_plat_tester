@@ -58,8 +58,9 @@ class TileMap:
 
         return matches
 
-    def tiles_around(self, pos):
+    def tiles_around(self, pos):#(returns the one offset pos lst, list of tile locs around)
         tiles = []
+        tile_locs = []
         #
         tile_loc_x = int(pos[0] // self.tile_size)
         tile_loc_y = int(pos[1] // self.tile_size) 
@@ -68,7 +69,8 @@ class TileMap:
             check_loc = str(tile_loc[0] + offset[0]) + ';' + str(tile_loc[1] + offset[1])
             if check_loc in self.tilemap:
                 tiles.append(self.tilemap[check_loc])
-        return tiles
+                tile_locs.append(check_loc)
+        return tiles, tile_locs
 
     #makes tile editor eaiser to work with
     def autotile(self):
@@ -112,7 +114,8 @@ class TileMap:
 
     def physics_rects_around(self, pos):
         rects = []
-        for tile in self.tiles_around(pos):
+        tile_one_values, tile_locs = self.tiles_around(pos)
+        for tile in tile_one_values:
             if tile['type'] in PHYSICS_TILES:
                 tile_pos_x_by_size = tile['pos'][0] * self.tile_size 
                 tile_pos_y_by_size = tile['pos'][1] * self.tile_size 
@@ -140,7 +143,9 @@ class TileMap:
         for x in range(start_x, end_x):
             for y in range(start_y, end_y):
                 loc = str(x) + ';' + str(y)
-                if loc in self.tilemap:
+                tile_one_values, tile_locs = self.tiles_around(self.game.player.pos)
+                #if loc in self.tilemap:
+                if loc in tile_locs:
                     tile = self.tilemap[loc]
                     tile_type = tile['type']
                     tile_variant = tile['variant']

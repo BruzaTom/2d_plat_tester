@@ -10,6 +10,7 @@ from scripts.clouds import Clouds
 from scripts.particle import Particle
 from scripts.spark import Spark
 from scripts.fonts import Font
+from scripts.hud import Hud
 
 class Game:
     def __init__(self):
@@ -17,7 +18,7 @@ class Game:
 
         pygame.display.set_caption('ninja game')
         #game screen
-        self.screen = pygame.display.set_mode((900, 600))
+        self.screen = pygame.display.set_mode((1400, 900))
         #render size 'zoom' / 'camera' - both displays will merge seperating outlined from normal
         render_size = (self.screen.get_width() // 4, self.screen.get_height() // 4)
         self.display = pygame.Surface((640, 480), pygame.SRCALPHA)#objects withoutline
@@ -72,6 +73,8 @@ class Game:
 
         #screen-shake effect
         self.screenshake = 0
+
+        self.hud = Hud(self)
 
     #load player
     #loads
@@ -318,6 +321,8 @@ class Game:
                 
             #manage transition
             manage_transition()
+
+            self.hud.render(self.display)
 
             self.small_font.render(self.display, 'Tile Map:', (20, 20))
             self.small_font.render(self.display, f'size = {str(self.tilemap.tile_size)}', (20, 30))

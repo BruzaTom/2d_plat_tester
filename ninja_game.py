@@ -102,7 +102,7 @@ class Game:
                 'player': (8, 16),
                 }
         self.assets.update(assets)
-        return Player(self, (50, 50), players.get(player_str, (30, 30)), ani_offsets.get(player_str, ani_offset))
+        return Player(self, (50, 50), players.get(player_str, (30, 30)), 10, ani_offsets.get(player_str, ani_offset))
 
     #level loader
     def load_level(self):
@@ -226,7 +226,9 @@ class Game:
                 elif abs(self.player.dashing) < 50:
                     if self.player.rect().collidepoint(projectile.pos):#projectile hit player
                         self.projectiles.remove(projectile)
-                        self.dead += 1#start death timer
+                        self.player.health -= 1
+                        if self.player.health <= 0:
+                            self.dead += 1#start death timer
                         self.sfx['hit'].play(0)
                         #screenshake
                         self.screenshake = max(16, self.screenshake)

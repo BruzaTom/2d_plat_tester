@@ -193,7 +193,7 @@ class Enemy(PhysicsEntity):
 
 
 class Player(PhysicsEntity):
-    def __init__(self, game, pos, size, ani_offset):
+    def __init__(self, game, pos, size, health, ani_offset):
         super().__init__(game, 'player', pos, size)
         self.air_time = 0
         self.jumps = 1
@@ -202,6 +202,7 @@ class Player(PhysicsEntity):
         self.lost_timer = 0
         self.norm_ani_offset = ani_offset[0]
         self.flip_ani_offset = ani_offset[1]
+        self.health = health
 
     def update(self, tilemap, movement=(0, 0)):
         super().update(tilemap, movement=movement)

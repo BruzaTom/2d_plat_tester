@@ -39,7 +39,7 @@ class Hud:
         self.small_font.render(surface, 'Player:', (x_pos, 20))
         pos = f'({self.game.player.pos[0]:.3f}, {self.game.player.pos[1]:.3f})'
         y_pos += 10
-        self.small_font.render(surface, f'pos = ' + pos, (x_pos, 30))
+        self.small_font.render(surface, f'pos = ' + pos, (x_pos, y_pos))
         velocity = f'({int(self.game.player.velocity[0])}, {int(self.game.player.velocity[1])})'
         y_pos += 10
         self.small_font.render(surface, f'velocity = ' + velocity, (x_pos, y_pos))

@@ -2,14 +2,13 @@ import sys, os
 import random#partickles
 import math#particles
 import pygame
-from scripts.entities.player import Player
+from scripts.entities.players import Samurai2, Player, Samuri
 from scripts.entities.enemy import Enemy
 from scripts.utils import load_image, load_images, Animation, blit_box
 from scripts.tilemap import TileMap
 from scripts.clouds import Clouds
 from scripts.particle import Particle
 from scripts.spark import Spark
-from scripts.fonts import Font
 from scripts.hud import Hud
 
 class Game:
@@ -77,34 +76,6 @@ class Game:
 
         self.hud = Hud(self)
 
-    #load player
-    #loads
-    def load_player(self, player_str):
-        ani_offset = [(-3, -3), (-3, -3)]
-        assets = {
-                    'player/idle': Animation(load_images(f'entities/{player_str}/idle'), img_dur=6),
-                    'player/run': Animation(load_images(f'entities/{player_str}/run'), img_dur=4),
-                    'player/jump': Animation(load_images(f'entities/{player_str}/jump'), img_dur=4),
-                    'player/slide': Animation(load_images(f'entities/{player_str}/idle'), img_dur=4),
-                    'player/wall_slide': Animation(load_images(f'entities/{player_str}/wall_slide'), img_dur=8),
-                    }
-        if player_str == 'samurai2':
-            assets['player/fall'] = Animation(load_images(f'entities/{player_str}/fall'), img_dur=8)
-            assets['player/dash'] = Animation(load_images(f'entities/{player_str}/dash'), img_dur=2, loop = False)
-        ani_offsets = {
-                #norm - flip
-                'samurai2': [(-36, -26), (-51, -26)],
-                'samuri': [(-3, 0), (-5, 0)],
-                'player': [(-3, -3), (-3, -3)],
-                }
-        players = {
-                'samurai2': (10, 25),
-                'samuri': (8, 16),
-                'player': (8, 16),
-                }
-        self.assets.update(assets)
-        return Player(self, (50, 50), players.get(player_str, (30, 30)), 10, ani_offsets.get(player_str, ani_offset))
-
     #level loader
     def load_level(self):
         #self.tilemap.load('data/maps/' + str(map_id) + '.json')
@@ -121,9 +92,9 @@ class Game:
             if spawner['variant'] == 0:
                 
                 #player select
-                #self.player = self.load_player('samuri') 
-                self.player = self.load_player('samurai2') 
-                #self.player = self.load_player('player') 
+                #self.player = Samuri(self, spawner['pos'], 10) 
+                self.player = Samurai2(self, spawner['pos'], 10) 
+                #self.player = Player(self, spawner['pos'], 10) 
 
                 self.player.pos = spawner['pos']
                 self.player.air_time = 0#prevents falling to death from multiple triggers
@@ -141,8 +112,6 @@ class Game:
         self.dead = 0
         #transition
         self.transition = -30
-        #fonts
-        self.small_font = Font('data/fonts/small_font/black.png')
 
     #game logic
     def logic(self):
@@ -281,6 +250,10 @@ class Game:
         #bg sfx
         #self.sfx['ambience'].play(-1)
 
+        #--------debug assets-----------
+        #for key in self.assets:
+            #print(key)
+        #-------------------------------
 
             #-------------------gameloop------------------------
 

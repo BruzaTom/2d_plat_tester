@@ -20,13 +20,14 @@ class Editor:
 
         self.assets = {
                 #from scripts/utils.py
-                'decor' : load_images('tiles/decor'),
-                'grass' : load_images('tiles/grass'),
-                'large_decor' : load_images('tiles/large_decor'),
-                'stone' : load_images('tiles/stone'),
-                'spawners' : load_images('tiles/spawners'),
-                'empty' : load_images('tiles/empty'),
-                'blue' : load_images('tiles/blue'),
+                'decor': load_images('tiles/decor'),
+                'grass': load_images('tiles/grass'),
+                'large_decor': load_images('tiles/large_decor'),
+                'stone': load_images('tiles/stone'),
+                'spawners': load_images('tiles/spawners'),
+                'empty': load_images('tiles/empty'),
+                'blue': load_images('tiles/blue'),
+                'collectables': load_images('tiles/collectables')
                 }
         
         #movement left, right, up, down

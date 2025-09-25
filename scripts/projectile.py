@@ -31,7 +31,9 @@ class Projectile:
         pos_x = self.pos[0] - img.get_width() / 2 - offset[0]
         pos_y = self.pos[1] - img.get_height() / 2 - offset[1]
         self.point = (pos_x, pos_y)#for collisions
-        offset_pos = (self.point[0] + self.ani_offset[0], self.point[1])
+        offset_pos = (self.point[0] + self.ani_offset[0], self.point[1] + self.ani_offset[1])
         surface.blit(self.image, offset_pos)
-        #blit_box(surface, self.point, img.get_size(), 'red')#use point and image.get_size
+        #blit_box(surface, self.point, img.get_size(), 'red')#point is center of image
+        #blit_box(surface, offset_pos, img.get_size(), 'red')#representation of point
+
 

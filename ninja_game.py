@@ -2,7 +2,8 @@ import sys, os
 import random#partickles
 import math#particles
 import pygame
-from scripts.entities import PhysicsEntity, Player, Enemy
+from scripts.entities.player import Player
+from scripts.entities.enemy import Enemy
 from scripts.utils import load_image, load_images, Animation, blit_box
 from scripts.tilemap import TileMap
 from scripts.clouds import Clouds
@@ -38,6 +39,7 @@ class Game:
                 'player' : load_image('entities/player.png'),
                 'background' : load_image('background2.png'),
                 'clouds': load_images('clouds'),
+                'collectables': load_images('tiles/collectables'),
                 'enemy/idle': Animation(load_images('entities/enemy/idle'), img_dur=6),
                 'enemy/run': Animation(load_images('entities/enemy/run'), img_dur=4),
                 'enemy/projectile': Animation(load_images('entities/enemy/projectile'), img_dur=20),

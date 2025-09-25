@@ -156,11 +156,11 @@ class TileMap:
                     surface.blit(img, tile_pos_offset)
         #-----------------true pos debug---------------------
                     #all tiles
-                    blit_box(surface, tile_pos_offset, (self.tile_size, self.tile_size), 'green')
+                    #blit_box(surface, tile_pos_offset, (self.tile_size, self.tile_size), 'green')
 
                     #tiles around
-                    if loc in self.tile_locs_around:
-                        blit_box(surface, tile_pos_offset, (self.tile_size, self.tile_size), 'orange')
+                    #if loc in self.tile_locs_around:
+                        #blit_box(surface, tile_pos_offset, (self.tile_size, self.tile_size), 'orange')
         #----------------------------------------------------
             
 

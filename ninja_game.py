@@ -2,7 +2,6 @@ import sys, os
 import random#partickles
 import math#particles
 import pygame
-import re 
 from scripts.entities import PhysicsEntity, Player, Enemy
 from scripts.utils import load_image, load_images, Animation, blit_box
 from scripts.tilemap import TileMap
@@ -326,18 +325,7 @@ class Game:
 
             self.hud.render(self.display)
 
-            self.small_font.render(self.display, 'Tile Map:', (20, 20))
-            self.small_font.render(self.display, f'size = {str(self.tilemap.tile_size)}', (20, 30))
-            self.small_font.render(self.display, f'tiles_around = {str(len(self.tilemap.tile_locs_around))}', (20, 40))
-            self.small_font.render(self.display, 'Player:', (200, 20))
-            pos = f'({self.player.pos[0]:.3f}, {self.player.pos[1]:.3f})'
-            self.small_font.render(self.display, f'pos = ' + pos, (200, 30))
-            velocity = f'({int(self.player.velocity[0])}, {int(self.player.velocity[1])})'
-            self.small_font.render(self.display, f'velocity = ' + velocity, (200, 40))
-            text = str(self.player.animation.images[self.player.animation.frame % len(self.player.animation.images)])
-            image_path = re.search(r'<(.*?)>', text)
-            self.small_font.render(self.display, f'animation = ' + str(self.player.action), (200, 50))
-            self.small_font.render(self.display, f'ani_offset = {str(self.player.ani_offset)}', (200, 60))
+            
 
             #display
             self.display_2.blit(self.display, (0, 0))#draw game back on top / "merge displays"

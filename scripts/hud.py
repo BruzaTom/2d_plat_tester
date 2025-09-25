@@ -20,4 +20,32 @@ class Hud:
 
     def render(self, surface):
         self.blit_hearts(surface)
+        self.info(surface)
+
+    def info(self, surface):
+        self.tile_info(surface)
+        self.player_info(surface)
+
+    def tile_info(self, surface):
+        x_pos, y_pos = 200, 20
+        self.small_font.render(surface, 'Tile Map:', (x_pos, y_pos))
+        y_pos += 10
+        self.small_font.render(surface, f'size = {str(self.game.tilemap.tile_size)}', (x_pos, y_pos))
+        y_pos += 10
+        self.small_font.render(surface, f'tiles_around = {str(len(self.game.tilemap.tile_locs_around))}', (x_pos, y_pos))
+
+    def player_info(self, surface):
+        x_pos, y_pos = 500, 20
+        self.small_font.render(surface, 'Player:', (x_pos, 20))
+        pos = f'({self.game.player.pos[0]:.3f}, {self.game.player.pos[1]:.3f})'
+        y_pos += 10
+        self.small_font.render(surface, f'pos = ' + pos, (x_pos, 30))
+        velocity = f'({int(self.game.player.velocity[0])}, {int(self.game.player.velocity[1])})'
+        y_pos += 10
+        self.small_font.render(surface, f'velocity = ' + velocity, (x_pos, y_pos))
+        text = str(self.game.player.animation.images[self.game.player.animation.frame % len(self.game.player.animation.images)])
+        y_pos += 10
+        self.small_font.render(surface, f'animation = ' + str(self.game.player.action), (x_pos, y_pos))
+        y_pos += 10
+        self.small_font.render(surface, f'ani_offset = {str(self.game.player.ani_offset)}', (x_pos, y_pos))
 

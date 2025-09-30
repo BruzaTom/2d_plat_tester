@@ -27,7 +27,8 @@ class Editor:
                 'spawners': load_images('tiles/spawners'),
                 'empty': load_images('tiles/empty'),
                 'blue': load_images('tiles/blue'),
-                'collectables': load_images('tiles/collectables')
+                'collectables': load_images('tiles/collectables'),
+                'portals': load_images('tiles/portals')
                 }
         
         #movement left, right, up, down

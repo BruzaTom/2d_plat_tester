@@ -10,6 +10,7 @@ from scripts.clouds import Clouds
 from scripts.particle import Particle
 from scripts.spark import Spark
 from scripts.hud import Hud
+from scripts.collectables.key import Key
 
 class Game:
     def __init__(self):
@@ -29,6 +30,7 @@ class Game:
 
         self.assets = {
                 #from scripts/utils.py
+                'portals': load_images('tiles/portals'),
                 'decor' : load_images('tiles/decor'),
                 'grass' : load_images('tiles/grass'),
                 'large_decor' : load_images('tiles/large_decor'),
@@ -86,6 +88,11 @@ class Game:
         for tree in self.tilemap.extract([('large_decor', 2)], keep=True):
             self.leaf_spawners.append(pygame.Rect(4 + tree['pos'][0], 4 + tree['pos'][1], 23, 13))
 
+        #keys
+        self.keys = []
+        for collectable in self.tilemap.extract([('collectables', 0)]):
+            self.keys.append(Key(self, collectable['pos']))
+
         #physics entities spawners
         self.enemies = []
         for spawner in self.tilemap.extract([('spawners', 0), ('spawners', 1)]):
@@ -105,6 +112,7 @@ class Game:
         self.projectiles = []
         self.particles = []
         self.sparks = []
+        self.key_count = 0
 
         #'camera' scroll
         self.scroll = [0, 0]
@@ -148,6 +156,14 @@ class Game:
     
     def run(self):
         #funcs
+        def manage_keys():
+            for key in self.keys:
+                kill = key.update()
+                key.render(self.display_2, offset=render_scroll)
+                if kill:
+                    self.key_count += 1
+                    self.keys.remove(key)
+
         def manage_transition():
             if self.transition:
                 transition_surface = pygame.Surface(self.display.get_size())
@@ -270,7 +286,10 @@ class Game:
             #clouds behind tilemap
             self.clouds.update()
             self.clouds.render(self.display_2, offset=render_scroll)
-            self.tilemap.render(self.display, offset=render_scroll)
+            self.tilemap.render(self.display_2, offset=render_scroll)
+
+            #mange keys
+            manage_keys()
 
             #enemy calls
             manage_enemies()

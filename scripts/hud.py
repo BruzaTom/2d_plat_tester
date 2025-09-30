@@ -21,11 +21,11 @@ class Hud:
     def render(self, surface):
         self.blit_hearts(surface)
         self.info(surface)
-        self.game_info(surface)
 
     def info(self, surface):
         self.tile_info(surface)
         self.player_info(surface)
+        self.game_info(surface)
 
     def tile_info(self, surface):
         x_pos, y_pos = 200, 20
@@ -55,5 +55,7 @@ class Hud:
         self.small_font.render(surface, 'Game:', (x_pos, y_pos))
         y_pos += 10
         self.small_font.render(surface, f'key_count = {self.game.key_count}', (x_pos, y_pos))
+        y_pos += 10
+        self.small_font.render(surface, f'enemy count = {len(self.game.enemies)}', (x_pos, y_pos))
 
 

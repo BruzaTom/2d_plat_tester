@@ -1,7 +1,7 @@
 import pygame, math, random
 from scripts.particle import Particle
 from scripts.entities.entities import PhysicsEntity
-from scripts.utils import Animation, load_images
+from scripts.utils import Animation, load_images, load_image
 
 class Samuri(PhysicsEntity):
     def __init__(self, game, pos, health, size=(8, 16)):
@@ -318,6 +318,7 @@ class Samurai2(PhysicsEntity):
         self.norm_ani_offset = (-36, -26)
         self.flip_ani_offset = (-51, -26)
         self.health = health
+        self.img = load_image('entities/samurai2/img.png')
 
     def update(self, tilemap, movement=(0, 0)):
         super().update(tilemap, movement=movement)

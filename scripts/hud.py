@@ -5,8 +5,10 @@ import pygame
 class Hud:
     def __init__(self, game):
         self.game = game
-        self.small_font = Font('data/fonts/small_font/black.png')
+        self.player_img = self.game.player.img
+        self.small_font = Font('data/fonts/large_font/1.png')
         self.heart_img = load_image('hearts/heart.png')
+        self.key_img = load_image('tiles/collectables/key.png')
         self.empty_heart_img = load_image('hearts/empty_heart.png')
         self.max_health = self.game.player.health
 
@@ -18,8 +20,24 @@ class Hud:
             else:
                 surface.blit(self.heart_img, (x_pos, 20))
 
+    def blit_keys(self, surface):
+        pos = (280, 20)
+        surface.blit(self.key_img, pos)
+        pos = (pos[0]+20, pos[1]+3)
+        self.small_font.render(surface, f'{self.game.key_count}', pos)
+
+    def blit_lives(self, surface):
+        pos = (0, 0)
+        for i in range(0, self.max_health):
+            pos = (pos[0]+(self.player_img.get_width()//2), pos[1])
+            surface.blit(self.player_img, pos)
+
+
+
     def render(self, surface):
         self.blit_hearts(surface)
+        self.blit_keys(surface)
+        self.blit_lives(surface)
         #self.info(surface)
 
     def info(self, surface):

@@ -104,7 +104,7 @@ class Game:
                 
                 #player select
                 #self.player = Samuri(self, spawner['pos'], 10) 
-                self.player = Samurai2(self, spawner['pos'], 10) 
+                self.player = Samurai2(self, spawner['pos'], 3) 
                 #self.player = Player(self, spawner['pos'], 10) 
 
                 self.player.pos = spawner['pos']
@@ -294,15 +294,18 @@ class Game:
 
         joystick = check_controller() 
         while True:
-            cli_debug = ""
+            debug = True
+            cli_debug = []
             clear_screen()
             #input
             if joystick:
                 self.controller_input()
-                cli_debug += f"Controller connected: {joystick}\n"
+                cli_debug.append(f"Controller connected: {joystick}\n")
             else:
                 self.keyboard_input()
-                cli_debug += "No controller connected: using keyboard\n"
+                cli_debug.append("No controller connected: using keyboard\n")
+
+            cli_debug.append(f'Game info:\nkey_count = {self.key_count}\nenemy count = {len(self.enemies)}\n')
 
             render_scroll = self.logic()
             
@@ -317,7 +320,7 @@ class Game:
             self.clouds.update()
             self.clouds.render(self.display_2, offset=render_scroll)
             self.tilemap.render(self.display_2, offset=render_scroll)
-            print(f'Tile Map:\nsize = {str(self.tilemap.tile_size)}\ntiles_around = {str(len(self.tilemap.tile_locs_around))}\n')
+            cli_debug.append(f'Tile Map:\nsize = {str(self.tilemap.tile_size)}\ntiles_around = {str(len(self.tilemap.tile_locs_around))}\n')
 
             #mange keys
             manage_keys()
@@ -329,6 +332,9 @@ class Game:
             if not self.dead:
                 self.player.update(self.tilemap, (self.movement[1] - self.movement[0], 0))
                 self.player.render(self.display_2, offset=render_scroll)
+            pos = f'{self.player.pos[0]:.3f}, {self.player.pos[1]:.3f}'
+            velocity = f'({int(self.player.velocity[0])}, {int(self.player.velocity[1])})'
+            cli_debug.append(f'Player info:\npos = {pos}\nvelocity = {velocity}\nanimation = {str(self.player.action)}\nani_offset = {str(self.player.ani_offset)}\n')
 
             #enemy projectile calls
             manage_enemy_projectiles()
@@ -349,8 +355,8 @@ class Game:
             self.hud.render(self.display)
 
             
-
-            print(cli_debug)
+            if debug == True:
+                print(("\n").join(cli_debug))
             #display
             self.display_2.blit(self.display, (0, 0))#draw game back on top / "merge displays"
             screenshake_offset = manage_screenshake()

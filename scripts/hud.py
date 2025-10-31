@@ -20,7 +20,7 @@ class Hud:
 
     def render(self, surface):
         self.blit_hearts(surface)
-        self.info(surface)
+        #self.info(surface)
 
     def info(self, surface):
         self.tile_info(surface)

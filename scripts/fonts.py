@@ -36,4 +36,3 @@ class Font:
                 x_offset += self.chars[char].get_width() + self.spacing
             else:
                 x_offset += self.space_width + self.spacing
-

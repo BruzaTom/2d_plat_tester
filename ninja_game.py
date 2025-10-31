@@ -12,17 +12,22 @@ from scripts.spark import Spark
 from scripts.hud import Hud
 from scripts.collectables.key import Key
 
+def clear_screen():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
 class Game:
     def __init__(self):
         pygame.init()
+        clear_screen()
+        
 
-        pygame.display.set_caption('ninja game')
+        pygame.display.set_caption('2D platformer tester')
         #game screen
-        self.screen = pygame.display.set_mode((1400, 900))
+        self.screen = pygame.display.set_mode((640, 480))
         #render size 'zoom' / 'camera' - both displays will merge seperating outlined from normal
         render_size = (self.screen.get_width() // 4, self.screen.get_height() // 4)
-        self.display = pygame.Surface((640, 480), pygame.SRCALPHA)#objects withoutline
-        self.display_2 = pygame.Surface((640, 480))#objects without outline
+        self.display = pygame.Surface((320, 240), pygame.SRCALPHA)#objects withoutline
+        self.display_2 = pygame.Surface((320, 240))#objects without outline
         #
         self.clock = pygame.time.Clock()
         #movement x y
@@ -67,7 +72,6 @@ class Game:
         self.clouds = Clouds(self.assets['clouds'], count=16)
         #pass in assets to TileMap using self as the game
         self.tilemap = TileMap(self, 30)
-        print(self.tilemap.tile_size)
 
         #start levels
         self.level = 0
@@ -258,6 +262,21 @@ class Game:
             display_mask = pygame.mask.from_surface(self.display)#mask for respective renders
             display_sillouette = display_mask.to_surface(setcolor=(0, 0, 0, 255), unsetcolor=(0, 0, 0, 0))#make less transparent
             self.display_2.blit(display_sillouette, (4, 4))
+
+        def get_joystick():
+            joystick = pygame.joystick.Joystick(0)
+            if pygame.joystick.get_count() > 0:
+                joystick.init()
+                print(f"Controller connected: {joystick.get_name()}")
+                return joystick
+
+        def check_controller():
+            try:
+                return get_joystick() 
+            except pygame.error as e:
+                print("No controller detected.")
+                return False
+
         
         #bg music
         pygame.mixer.music.load('data/music.wav')
@@ -273,7 +292,18 @@ class Game:
 
             #-------------------gameloop------------------------
 
+        joystick = check_controller() 
         while True:
+            cli_debug = ""
+            clear_screen()
+            #input
+            if joystick:
+                self.controller_input()
+                cli_debug += f"Controller connected: {joystick}\n"
+            else:
+                self.keyboard_input()
+                cli_debug += "No controller connected: using keyboard\n"
+
             render_scroll = self.logic()
             
             self.display.fill((0, 0, 0, 0))#fill forground with black transparant for mask
@@ -287,6 +317,7 @@ class Game:
             self.clouds.update()
             self.clouds.render(self.display_2, offset=render_scroll)
             self.tilemap.render(self.display_2, offset=render_scroll)
+            print(f'Tile Map:\nsize = {str(self.tilemap.tile_size)}\ntiles_around = {str(len(self.tilemap.tile_locs_around))}\n')
 
             #mange keys
             manage_keys()
@@ -311,8 +342,6 @@ class Game:
             #leaf particles calls
             manage_particles()
                 
-            #input
-            self.keyboard_input()
                 
             #manage transition
             manage_transition()
@@ -321,6 +350,7 @@ class Game:
 
             
 
+            print(cli_debug)
             #display
             self.display_2.blit(self.display, (0, 0))#draw game back on top / "merge displays"
             screenshake_offset = manage_screenshake()
@@ -349,6 +379,32 @@ class Game:
                     self.movement[0] = False
                 if event.key == pygame.K_RIGHT:
                     self.movement[1] = False
+
+    def controller_input(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            # D-Pad (Hat Motion)
+            if event.type == pygame.JOYHATMOTION:
+                hat_x, hat_y = event.value
+                self.movement[0] = (hat_x == -1)  # Left
+                self.movement[1] = (hat_x == 1)   # Right
+                # Optional: add up/down if needed
+                # self.movement[2] = (hat_y == -1)  # Up
+                # self.movement[3] = (hat_y == 1)   # Down
+            # Button Presses
+            if event.type == pygame.JOYBUTTONDOWN:
+                match event.button:
+                    case 0:  # A button
+                        self.player.jump()
+                    case 2:  # X button
+                        self.player.dash()
+                    # case 1:  # B button (optional)
+                    #     self.player.attack()
+                    # case _:  # fallback
+                    #     print(f"Unhandled button: {event.button}")
+
 
 Game().run()
 

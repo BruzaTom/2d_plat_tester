@@ -1,6 +1,7 @@
 import sys, os
 import random#partickles
 import math#particles
+from pydub import AudioSegment
 import pygame
 from scripts.entities.players import Samurai2, Player, Samuri
 from scripts.entities.enemy import Enemy
@@ -61,6 +62,7 @@ class Game:
                 'hit': pygame.mixer.Sound('data/sfx/hit.wav'),
                 'shoot': pygame.mixer.Sound('data/sfx/shoot.wav'),
                 'ambience': pygame.mixer.Sound('data/sfx/ambience.wav'),
+                'collect': pygame.mixer.Sound('data/sfx/collect.wav'),
                 }
 
         self.sfx['ambience'].set_volume(0.2)
@@ -68,7 +70,8 @@ class Game:
         self.sfx['hit'].set_volume(0.8)
         self.sfx['dash'].set_volume(0.3)
         self.sfx['jump'].set_volume(0.7)
-
+        self.sfx['collect'].set_volume(0.7)
+        
         self.clouds = Clouds(self.assets['clouds'], count=16)
         #pass in assets to TileMap using self as the game
         self.tilemap = TileMap(self, 30)
@@ -167,6 +170,7 @@ class Game:
                 if kill:
                     self.key_count += 1
                     self.keys.remove(key)
+                    self.sfx['collect'].play(0)
 
         def manage_transition():
             if self.transition:
@@ -404,8 +408,10 @@ class Game:
                 match event.button:
                     case 0:  # A button
                         self.player.jump()
+                        self.sfx['jump'].play(0)
                     case 2:  # X button
                         self.player.dash()
+                        self.sfx['dash'].play(0)
                     # case 1:  # B button (optional)
                     #     self.player.attack()
                     # case _:  # fallback
@@ -414,19 +420,3 @@ class Game:
 
 Game().run()
 
-#
-#
-#
-
-def controller_input():
-    #d-pad
-    if event.type == pygame.JOYHATMOTION:
-        hat_x, hat_y = event.value                    
-        self.movement[0] = hat_x == -1  # Left → True if pressed
-        self.movement[1] = hat_x == 1   # Right → True if pressed
-    #buttons
-    if event.type == pygame.JOYBUTTONDOWN:
-        if event.button == 0:# A button
-            self.player.jump()
-        if event.button == 2:# X button
-            self.player.dash()

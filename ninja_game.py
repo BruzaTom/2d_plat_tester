@@ -51,6 +51,7 @@ class Game:
                 'enemy/run': Animation(load_images('entities/enemy/run'), img_dur=4),
                 'enemy/projectile': Animation(load_images('entities/enemy/projectile'), img_dur=20),
                 'particle/leaf': Animation(load_images('particles/leaf'), img_dur=20, loop=False),
+                'particle/pink_leaf': Animation(load_images('particles/pink_leaf'), img_dur=20, loop=False),
                 'particle/particle': Animation(load_images('particles/particle'), img_dur=6, loop=False),
                 'gun': load_image('gun.png'),
                 }
@@ -92,7 +93,8 @@ class Game:
         
         #leaf spawners are trees ('large_decor', 2)
         self.leaf_spawners = []
-        for tree in self.tilemap.extract([('large_decor', 2)], keep=True):
+#        for tree in self.tilemap.extract([('large_decor', 2)], keep=True):
+        for tree in self.tilemap.extract([('large_decor', 3)], keep=True):
             self.leaf_spawners.append(pygame.Rect(4 + tree['pos'][0], 4 + tree['pos'][1], 23, 13))
 
         #keys
@@ -149,7 +151,7 @@ class Game:
                 pos_x = rect.x + random.random() * rect.width
                 pos_y = rect.y + random.random() * rect.height
                 pos = (pos_x, pos_y)
-                self.particles.append(Particle(self, 'leaf', pos, velocity=[-0.1, 0.3], frame=random.randint(0, 20)))
+                self.particles.append(Particle(self, 'pink_leaf', pos, velocity=[-0.1, 0.3], frame=random.randint(0, 20)))
         
         #screenshake logic
         self.screenshake = max(0, self.screenshake - 1) 
@@ -185,7 +187,8 @@ class Game:
             for particle in self.particles.copy():
                 kill = particle.update()
                 particle.render(self.display_2, offset=render_scroll)
-                if particle.p_type == 'leaf':
+#                if particle.p_type == 'leaf':
+                if particle.p_type == 'pink_leaf':
                     #apply sin effect to position               0.035 slows down effect
                     particle.pos[0] += math.sin(particle.animation.frame * 0.035) * 0.3
                 if kill:

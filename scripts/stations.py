@@ -12,7 +12,7 @@ class Chest:
         self.triggered = False
 
     def update(self):
-        if self.game.player.rect().collidepoint(self.pos) and self.game.key_count > 0:
+        if self.game.player.rect().colliderect(self.image.get_rect(topleft=(self.pos[0], self.pos[1]))) and self.game.key_count > 0:
             if not self.triggered:
                 self.game.key_count -= 1
                 self.game.words.append(Chest_opened(self.game, self.pos.copy()))

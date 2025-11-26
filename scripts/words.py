@@ -5,7 +5,6 @@ class Word:
     def __init__(self, game, pos):
         self.animation = None #overwritten in children
         self.pos = pos
-        self.img = None
         self.timer = 0
 
     def update(self):

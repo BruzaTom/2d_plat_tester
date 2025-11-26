@@ -76,6 +76,7 @@ class Game:
         self.sfx['dash'].set_volume(0.3)
         self.sfx['jump'].set_volume(0.7)
         self.sfx['collect'].set_volume(0.7)
+        self.sfx['open_chest'].set_volume(0.7)
         
         self.clouds = Clouds(self.assets['clouds'], count=16)
         #pass in assets to TileMap using self as the game
@@ -435,11 +436,11 @@ class Game:
             if event.type == pygame.JOYBUTTONDOWN:
                 match event.button:
                     case 0:  # A button
-                        self.player.jump()
-                        self.sfx['jump'].play(0)
+                        if self.player.jump():
+                            self.sfx['jump'].play(0)
                     case 2:  # X button
-                        self.player.dash()
-                        self.sfx['dash'].play(0)
+                        if self.player.dash():
+                            self.sfx['dash'].play(0)
                     # case 1:  # B button (optional)
                     #     self.player.attack()
                     # case _:  # fallback

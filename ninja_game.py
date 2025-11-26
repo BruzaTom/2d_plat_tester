@@ -12,6 +12,7 @@ from scripts.particle import Particle
 from scripts.spark import Spark
 from scripts.hud import Hud
 from scripts.collectables.key import Key
+from scripts.words import Plus_key
 
 def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -37,6 +38,7 @@ class Game:
         self.assets = {
                 #from scripts/utils.py
                 'portals': load_images('tiles/portals'),
+                'chests': load_images('tiles/chests'),
                 'decor' : load_images('tiles/decor'),
                 'grass' : load_images('tiles/grass'),
                 'large_decor' : load_images('tiles/large_decor'),
@@ -100,7 +102,7 @@ class Game:
         #keys
         self.keys = []
         for collectable in self.tilemap.extract([('collectables', 0)]):
-            self.keys.append(Key(self, collectable['pos']))
+            self.keys.append(Key(self, collectable['pos'], Plus_key(self, collectable['pos'])))
 
         #physics entities spawners
         self.enemies = []
@@ -122,9 +124,11 @@ class Game:
         self.particles = []
         self.sparks = []
         self.key_count = 0
+        self.words = []
 
         #'camera' scroll
         self.scroll = [0, 0]
+        self.render_Scroll = [0,0]
         #death
         self.dead = 0
         #transition
@@ -160,15 +164,22 @@ class Game:
         self.scroll[0] += (self.player.rect().centerx - self.display.get_width() / 2 - self.scroll[0]) / 30
         self.scroll[1] += (self.player.rect().centery - self.display.get_height() / 2 - self.scroll[1]) / 30
         #convert to int to avoid jitters
-        render_scroll = (int(self.scroll[0]), int(self.scroll[1]))
-        return render_scroll
+        self.render_scroll = (int(self.scroll[0]), int(self.scroll[1]))
+        return self.render_scroll
     
     def run(self):
         #funcs
+        def manage_words():
+            for word in self.words:
+                word.update()
+                word.render(self.display_2, self.render_scroll)
+                if word.timer >= 8:
+                    self.words.remove(word)
+
         def manage_keys():
             for key in self.keys:
                 kill = key.update()
-                key.render(self.display_2, offset=render_scroll)
+                key.render(self.display_2, offset=self.render_scroll)
                 if kill:
                     self.key_count += 1
                     self.keys.remove(key)
@@ -186,7 +197,7 @@ class Game:
         def manage_particles():
             for particle in self.particles.copy():
                 kill = particle.update()
-                particle.render(self.display_2, offset=render_scroll)
+                particle.render(self.display_2, offset=self.render_scroll)
 #                if particle.p_type == 'leaf':
                 if particle.p_type == 'pink_leaf':
                     #apply sin effect to position               0.035 slows down effect
@@ -198,7 +209,7 @@ class Game:
         def manage_enemies():
             for enemy in self.enemies.copy():
                 kill = enemy.update(self.tilemap, (0, 0))
-                enemy.render(self.display_2, offset=render_scroll)
+                enemy.render(self.display_2, offset=self.render_scroll)
                 if kill:
                     self.enemies.remove(enemy)
 
@@ -206,7 +217,7 @@ class Game:
         def manage_enemy_projectiles():
             for projectile in self.projectiles.copy():
                 projectile.update()
-                projectile.render(self.display, offset=render_scroll)
+                projectile.render(self.display, offset=self.render_scroll)
                 #debug projectiles
                 #blit_box(self.display_2, (pos_x, pos_y), img.get_size(), 'green')
                 if self.tilemap.solid_check(projectile.pos):#projectile hit wall
@@ -257,7 +268,7 @@ class Game:
         def manage_projectile_sparks():
             for spark in self.sparks.copy():
                 kill = spark.update()
-                spark.render(self.display, offset=render_scroll)
+                spark.render(self.display, offset=self.render_scroll)
                 if kill:
                     self.sparks.remove(spark)
 
@@ -314,7 +325,7 @@ class Game:
 
             cli_debug.append(f'Game info:\nkey_count = {self.key_count}\nenemy count = {len(self.enemies)}\n')
 
-            render_scroll = self.logic()
+            self.render_scroll = self.logic()
             
             self.display.fill((0, 0, 0, 0))#fill forground with black transparant for mask
             #backgrond img
@@ -325,12 +336,13 @@ class Game:
 
             #clouds behind tilemap
             self.clouds.update()
-            self.clouds.render(self.display_2, offset=render_scroll)
-            self.tilemap.render(self.display_2, offset=render_scroll)
+            self.clouds.render(self.display_2, offset=self.render_scroll)
+            self.tilemap.render(self.display_2, offset=self.render_scroll)
             cli_debug.append(f'Tile Map:\nsize = {str(self.tilemap.tile_size)}\ntiles_around = {str(len(self.tilemap.tile_locs_around))}\n')
 
             #mange keys
             manage_keys()
+            manage_words()
 
             #enemy calls
             manage_enemies()
@@ -338,7 +350,7 @@ class Game:
             #player calls
             if not self.dead:
                 self.player.update(self.tilemap, (self.movement[1] - self.movement[0], 0))
-                self.player.render(self.display_2, offset=render_scroll)
+                self.player.render(self.display_2, offset=self.render_scroll)
             pos = f'{self.player.pos[0]:.3f}, {self.player.pos[1]:.3f}'
             velocity = f'({int(self.player.velocity[0])}, {int(self.player.velocity[1])})'
             cli_debug.append(f'Player info:\npos = {pos}\nvelocity = {velocity}\nanimation = {str(self.player.action)}\nani_offset = {str(self.player.ani_offset)}\n')

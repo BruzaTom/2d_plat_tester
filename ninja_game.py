@@ -13,6 +13,7 @@ from scripts.spark import Spark
 from scripts.hud import Hud
 from scripts.collectables.key import Key
 from scripts.words import Plus_key
+from scripts.stations import Chest
 
 def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -38,7 +39,7 @@ class Game:
         self.assets = {
                 #from scripts/utils.py
                 'portals': load_images('tiles/portals'),
-                'chests': load_images('tiles/chests'),
+                'station': load_images('tiles/stations/chests'),
                 'decor' : load_images('tiles/decor'),
                 'grass' : load_images('tiles/grass'),
                 'large_decor' : load_images('tiles/large_decor'),
@@ -66,6 +67,7 @@ class Game:
                 'shoot': pygame.mixer.Sound('data/sfx/shoot.wav'),
                 'ambience': pygame.mixer.Sound('data/sfx/ambience.wav'),
                 'collect': pygame.mixer.Sound('data/sfx/collect.wav'),
+                'open_chest': pygame.mixer.Sound('data/sfx/open_chest.wav'),
                 }
 
         self.sfx['ambience'].set_volume(0.2)
@@ -98,6 +100,11 @@ class Game:
 #        for tree in self.tilemap.extract([('large_decor', 2)], keep=True):
         for tree in self.tilemap.extract([('large_decor', 3)], keep=True):
             self.leaf_spawners.append(pygame.Rect(4 + tree['pos'][0], 4 + tree['pos'][1], 23, 13))
+
+        #stations
+        self.stations = []
+        for station in self.tilemap.extract([('station', 0)]):
+            self.stations.append(Chest(self, station['pos']))
 
         #keys
         self.keys = []
@@ -169,6 +176,11 @@ class Game:
     
     def run(self):
         #funcs
+        def manage_stations():
+            for station in self.stations:
+                station.update()
+                station.render(self.display_2, self.render_scroll)
+
         def manage_words():
             for word in self.words:
                 word.update()
@@ -343,6 +355,7 @@ class Game:
             #mange keys
             manage_keys()
             manage_words()
+            manage_stations()
 
             #enemy calls
             manage_enemies()

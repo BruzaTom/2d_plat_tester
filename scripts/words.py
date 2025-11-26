@@ -23,5 +23,9 @@ class Plus_key(Word):
         super().__init__(game, pos)        
         self.animation = Animation(load_images("words/plus_key"))
         
+class Chest_opened(Word):
+    def __init__(self, game, pos):
+        super().__init__(game, pos)        
+        self.animation = Animation(load_images("words/chest_opened"))
 
 

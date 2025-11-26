@@ -21,7 +21,7 @@ class Editor:
         self.assets = {
                 #from scripts/utils.py
                 'decor': load_images('tiles/decor'),
-                'chests': load_images('tiles/chests'),
+                'station': load_images('tiles/stations/chests'),
                 'grass': load_images('tiles/grass'),
                 'large_decor': load_images('tiles/large_decor'),
                 'stone': load_images('tiles/stone'),

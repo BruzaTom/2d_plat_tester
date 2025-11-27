@@ -43,6 +43,9 @@ def load_images(path):
         #color_key_debug(images[-1])
     return images
 
+def get_img_rect(img, pos):
+    return img.get_rect(topleft=(pos[0], pos[1]))
+    
 #debug
 def color_key_debug(img):
     print(f'img: {img}\ntop-left pixel: {img.get_at((0, 0))}')

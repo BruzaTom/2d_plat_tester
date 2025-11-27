@@ -1,5 +1,5 @@
 import pygame
-from scripts.utils import load_image
+from scripts.utils import load_image, get_img_rect
 from scripts.words import Plus_key
 
 class Key:
@@ -8,9 +8,10 @@ class Key:
         self.pos = pos
         self.img = load_image('tiles/collectables/key.png')
         self.word = word
+        self.img_rect = get_img_rect(self.img, self.pos)
 
     def update(self):
-        if self.game.player.rect().collidepoint(self.pos):
+        if self.game.player.rect().colliderect(self.img_rect):
             self.game.words.append(self.word)
             return True
 

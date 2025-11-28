@@ -101,3 +101,42 @@ class Enemy(PhysicsEntity):
             gun_pos_y = self.rect().centery - offset[1]
             gun_pos = (gun_pos_x, gun_pos_y)
             surface.blit(self.game.assets['gun'], gun_pos)
+
+class Barrel_bomber(PhysicsEntity):
+    def __init__(self, game, pos, size):
+        super().__init__(game, 'barrel_bomber', pos, size)
+        self.walking = 0
+        self.norm_ani_offset = (-4, 0)
+        self.flip_ani_offset = (-4, 0)
+
+    def update(self, tilemap, movement=(0, 0)):
+        if self.flip:
+            self.ani_offset = self.flip_ani_offset
+        else:
+            self.ani_offset = self.norm_ani_offset
+
+        if self.walking:
+            if tilemap.solid_check((self.rect().centerx + (-7 if self.flip else 7), self.pos[1] + 23)):#check solid ground
+                if self.collisions['right'] or self.collisions['left']:#if run intowall flip
+                    self.flip = not self.flip
+                else:
+                    movement = (movement[0] - 0.5 if self.flip else 0.5, movement[1])#update x movement
+            else:
+                self.flip = not self.flip
+            self.walking = max(0, self.walking -1)#decrement walking
+            
+        if random.random() < 0.01:#ocasionally walk for 30 to 120 secs
+            self.walking = random.randint(30, 120)
+
+        super().update(tilemap, movement=movement)
+
+        if movement[0] != 0 and self.action != 'attack':
+            self.set_action('run')
+        else:
+            self.set_action('idle')
+
+
+    def render(self, surface, offset=(0, 0)):
+        super().render(surface, offset=offset)
+        
+

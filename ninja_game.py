@@ -4,7 +4,7 @@ import math#particles
 from pydub import AudioSegment
 import pygame
 from scripts.entities.players import Samurai2, Player, Samuri
-from scripts.entities.enemy import Enemy
+from scripts.entities.enemy import Enemy, Barrel_bomber
 from scripts.utils import load_image, load_images, Animation, blit_box
 from scripts.tilemap import TileMap
 from scripts.clouds import Clouds
@@ -50,6 +50,9 @@ class Game:
                 'background' : load_image('background2.png'),
                 'clouds': load_images('clouds'),
                 'collectables': load_images('tiles/collectables'),
+                'barrel_bomber/idle': Animation(load_images('entities/barrel_bomber/idle'), img_dur=6),
+                'barrel_bomber/run': Animation(load_images('entities/barrel_bomber/run'), img_dur=4),
+                'barrel_bomber/attack': Animation(load_images('entities/barrel_bomber/attack'), img_dur=12, loop=False),
                 'enemy/idle': Animation(load_images('entities/enemy/idle'), img_dur=6),
                 'enemy/run': Animation(load_images('entities/enemy/run'), img_dur=4),
                 'enemy/projectile': Animation(load_images('entities/enemy/projectile'), img_dur=20),
@@ -110,11 +113,11 @@ class Game:
         #keys
         self.keys = []
         for collectable in self.tilemap.extract([('collectables', 0)]):
-            self.keys.append(Key(self, collectable['pos'], Plus_key(self, collectable['pos'])))
+            self.keys.append(Key(self, collectable['pos']))
 
         #physics entities spawners
         self.enemies = []
-        for spawner in self.tilemap.extract([('spawners', 0), ('spawners', 1)]):
+        for spawner in self.tilemap.extract([('spawners', 0), ('spawners', 1), ('spawners', 2)]):
             if spawner['variant'] == 0:
                 
                 #player select
@@ -124,6 +127,8 @@ class Game:
 
                 self.player.pos = spawner['pos']
                 self.player.air_time = 0#prevents falling to death from multiple triggers
+            if spawner['variant'] == 2:
+                self.enemies.append(Barrel_bomber(self, spawner['pos'], (16, 18)))
             else:
                 self.enemies.append(Enemy(self, spawner['pos'], (8, 15)))
         

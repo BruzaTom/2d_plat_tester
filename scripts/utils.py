@@ -16,13 +16,16 @@ class Animation:
         return Animation(self.images, self.img_dur, self.loop)
 
     def update(self):
-        dur_x_len = self.img_dur * len(self.images) 
-        if self.loop:
-            self.frame = self.frame + 1 % dur_x_len
+        if len(self.images) == 1:
+            return
         else:
-            self.frame = min(self.frame + 1, dur_x_len - 1)
-            if self.frame >= dur_x_len - 1:
-                self.done = True
+            dur_x_len = self.img_dur * len(self.images) 
+            if self.loop:
+                self.frame = self.frame + 1 % dur_x_len
+            else:
+                self.frame = min(self.frame + 1, dur_x_len - 1)
+                if self.frame >= dur_x_len - 1:
+                    self.done = True
 
     def img(self):
         index = int(self.frame / self.img_dur) % len(self.images)
@@ -43,6 +46,7 @@ def load_images(path):
         #color_key_debug(images[-1])
     return images
 
+#for collectables and stations collide rects
 def get_img_rect(img, pos):
     return img.get_rect(topleft=(pos[0], pos[1]))
     

@@ -3,16 +3,15 @@ from scripts.utils import load_image, get_img_rect
 from scripts.words import Plus_key
 
 class Key:
-    def __init__(self, game, pos, word):
+    def __init__(self, game, pos):
         self.game = game
         self.pos = pos
         self.img = load_image('tiles/collectables/key.png')
-        self.word = word
         self.img_rect = get_img_rect(self.img, self.pos)
 
     def update(self):
         if self.game.player.rect().colliderect(self.img_rect):
-            self.game.words.append(self.word)
+            self.game.words.append(Plus_key(self.game, self.pos.copy()))
             return True
 
     def render(self, surface, offset=(0, 0)):

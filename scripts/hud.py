@@ -12,6 +12,12 @@ class Hud:
         self.empty_heart_img = load_image('hearts/empty_heart.png')
         self.max_health = self.game.player.health
 
+    def render(self, surface):
+        self.blit_hearts(surface)
+        self.blit_keys(surface)
+        self.blit_lives(surface)
+        #self.info(surface)
+
     def blit_hearts(self, surface):
         for i in range(0, self.max_health):
             x_pos = (i + 1) * self.heart_img.get_width()
@@ -32,14 +38,7 @@ class Hud:
             pos = (pos[0]+(self.player_img.get_width()//2), pos[1])
             surface.blit(self.player_img, pos)
 
-
-
-    def render(self, surface):
-        self.blit_hearts(surface)
-        self.blit_keys(surface)
-        self.blit_lives(surface)
-        #self.info(surface)
-
+#onscreen debug
     def info(self, surface):
         self.tile_info(surface)
         self.player_info(surface)
